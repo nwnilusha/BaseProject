@@ -8,49 +8,27 @@
 import SwiftUI
 
 struct BluetoothDevicesView: View {
+    @StateObject private var viewModel = BluetoothDevicesViewModel()
     
-    @StateObject var viewModel: BluetoothDevicesViewModel = BluetoothDevicesViewModel()
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.discoveredPeripherals, id: \.self) { index in
-                        NavigationLink(destination: ConnectedDeviceView()) {
-                            BluetoothDeviceView(deviceName: "", connectedSttus: "")
-                        }
+            List(viewModel.discoveredDevices) { device in
+                HStack {
+                    Text(device.name)
+                    Spacer()
+                    Button("Connect") {
+                        viewModel.connect(to: device)
                     }
+                    .disabled(viewModel.connectionState == .connecting)
                 }
-                Text("Bluetooth Devices")
+            }
+            .navigationTitle("Bluetooth Devices")
+            .navigationDestination(isPresented: .constant(viewModel.connectionState == .connected)) {
+                if let device = viewModel.connectedDevice {
+                    ConnectedDeviceView(device: device)
+                }
             }
         }
-    }
-}
-
-struct BluetoothDeviceView: View {
-    
-    let deviceName: String
-    let connectedSttus: String
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(deviceName)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                Text(connectedSttus)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
-        }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .cornerRadius(8)
-        .shadow(radius: 4)
-        .padding(.horizontal)
     }
 }
 

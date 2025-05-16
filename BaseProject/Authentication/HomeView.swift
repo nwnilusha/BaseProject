@@ -35,10 +35,10 @@ struct HomeView: View {
                         ItemView(informationText: "Dogs Cats Data", imageName: "cat")
                     }
                     
-                    Button {
-                        // Add future action
+                    NavigationLink {
+                        BluetoothDevicesView()
                     } label: {
-                        ItemView(informationText: "Coming Soon", imageName: "antenna.radiowaves.left.and.right")
+                        ItemView(informationText: "Bluetooth Devices", imageName: "antenna.radiowaves.left.and.right")
                     }
 
                     Button {
