@@ -38,7 +38,7 @@ struct HomeView: View {
                     Button {
                         // Add future action
                     } label: {
-                        ItemView(informationText: "Coming Soon", imageName: "globe")
+                        ItemView(informationText: "Coming Soon", imageName: "antenna.radiowaves.left.and.right")
                     }
 
                     Button {
@@ -80,6 +80,6 @@ struct ItemView: View {
     }
 }
 
-#Preview {
-    HomeView()
-}
+//#Preview {
+//    HomeView()
+//}
