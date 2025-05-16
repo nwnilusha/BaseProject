@@ -1,0 +1,78 @@
+[
+  {
+    "breeds": [],
+    "id": "2jh",
+    "url": "https://cdn2.thecatapi.com/images/2jh.jpg",
+    "width": 500,
+    "height": 335
+  },
+  {
+    "breeds": [],
+    "categories": [
+      {
+        "id": 1,
+        "name": "hats"
+      }
+    ],
+    "id": "35a",
+    "url": "https://cdn2.thecatapi.com/images/35a.gif",
+    "width": 500,
+    "height": 280
+  },
+  {
+    "breeds": [],
+    "id": "4i2",
+    "url": "https://cdn2.thecatapi.com/images/4i2.gif",
+    "width": 500,
+    "height": 197
+  },
+  {
+    "breeds": [],
+    "id": "8fe",
+    "url": "https://cdn2.thecatapi.com/images/8fe.jpg",
+    "width": 800,
+    "height": 600
+  },
+  {
+    "breeds": [],
+    "id": "9s2",
+    "url": "https://cdn2.thecatapi.com/images/9s2.jpg",
+    "width": 500,
+    "height": 332
+  },
+  {
+    "breeds": [],
+    "id": "9su",
+    "url": "https://cdn2.thecatapi.com/images/9su.jpg",
+    "width": 560,
+    "height": 617
+  },
+  {
+    "breeds": [],
+    "id": "atr",
+    "url": "https://cdn2.thecatapi.com/images/atr.jpg",
+    "width": 4056,
+    "height": 3104
+  },
+  {
+    "breeds": [],
+    "id": "av3",
+    "url": "https://cdn2.thecatapi.com/images/av3.jpg",
+    "width": 600,
+    "height": 402
+  },
+  {
+    "breeds": [],
+    "id": "deh",
+    "url": "https://cdn2.thecatapi.com/images/deh.jpg",
+    "width": 475,
+    "height": 661
+  },
+  {
+    "breeds": [],
+    "id": "MTU4ODAyMg",
+    "url": "https://cdn2.thecatapi.com/images/MTU4ODAyMg.png",
+    "width": 768,
+    "height": 1024
+  }
+]
