@@ -8,75 +8,73 @@
 import SwiftUI
 
 struct Dogs_CatsListView: View {
-
+    
     @StateObject private var viewModel: Dogs_CatsViewModel
-
+    
     init(imageTypes: String) {
         _viewModel = StateObject(wrappedValue:
-            Dogs_CatsViewModel(
-                imageTypes: imageTypes,
-                serviceFactory: { config in
-                    let apiService = ApiService(urlString: config.urlString())
-                    return Service(apiService: apiService)
-                }
-            )
+                                    Dogs_CatsViewModel(
+                                        imageTypes: imageTypes,
+                                        serviceFactory: { config in
+                                            let apiService = ApiService(urlString: config.urlString())
+                                            return Service(apiService: apiService)
+                                        }
+                                    )
         )
     }
-
+    
     var body: some View {
-        NavigationStack {
-            ZStack {
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(viewModel.dogsCats.indices, id: \.self) { index in
-                            let dogCat = viewModel.dogsCats[index]
-                            NavigationLink(destination: Dogs_CatsDetailView(dogCatDetails: dogCat)) {
-                                DogCatView(dogCat: dogCat)
-                            }
-                            .buttonStyle(.plain)
-                            .onAppear {
-                                if index == viewModel.dogsCats.count - 1 {
-                                    Task { await viewModel.loadNextPageIfNeeded() }
-                                }
+        ZStack {
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    ForEach(viewModel.dogsCats.indices, id: \.self) { index in
+                        let dogCat = viewModel.dogsCats[index]
+                        NavigationLink(destination: Dogs_CatsDetailView(dogCatDetails: dogCat)) {
+                            DogCatView(dogCat: dogCat)
+                        }
+                        .buttonStyle(.plain)
+                        .onAppear {
+                            if index == viewModel.dogsCats.count - 1 {
+                                Task { await viewModel.loadNextPageIfNeeded() }
                             }
                         }
                     }
-                    .padding(.top, 16)
                 }
-
-                if viewModel.isLoading && viewModel.dogsCats.isEmpty {
-                    ProgressView()
-                        .padding()
-                }
+                .padding(.top, 16)
             }
-            .navigationTitle("Dogs & Cats List")
-            .task {
-                await viewModel.loadInitialData()
+            
+            if viewModel.isLoading && viewModel.dogsCats.isEmpty {
+                ProgressView()
+                    .padding()
             }
-            .alert(isPresented: .constant(viewModel.errorMessage != nil)) {
-                Alert(
-                    title: Text("Error"),
-                    message: Text(viewModel.errorMessage ?? "Unknown error"),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
+        }
+        .navigationTitle("Dogs & Cats List")
+        .task {
+            await viewModel.loadInitialData()
+        }
+        .alert(isPresented: .constant(viewModel.errorMessage != nil)) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorMessage ?? "Unknown error"),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }
 
 struct DogCatView: View {
     let dogCat: DogsCats
-
+    
     var imageSizeText: String {
         "\(Int(dogCat.height)) x \(Int(dogCat.width))"
     }
-
+    
     var body: some View {
         HStack(spacing: 16) {
             RemoteImageView(url: URL(string: dogCat.url))
                 .frame(width: 100, height: 100)
                 .cornerRadius(8)
-
+            
             VStack(alignment: .leading, spacing: 4) {
                 Text("ID: \(dogCat.id)")
                     .font(.headline)
@@ -84,9 +82,9 @@ struct DogCatView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }
-
+            
             Spacer()
-
+            
             Image(systemName: "chevron.right")
                 .foregroundColor(.gray)
         }
@@ -100,7 +98,7 @@ struct DogCatView: View {
 
 struct RemoteImageView: View {
     let url: URL?
-
+    
     var body: some View {
         Group {
             if let url = url {

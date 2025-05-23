@@ -13,7 +13,6 @@ struct ImageTypeSelectionView: View {
     @State private var navigateNext = false
 
     var body: some View {
-        NavigationStack {
             VStack(alignment: .leading, spacing: 24) {
                 Text("Select Image Type")
                     .font(.largeTitle)
@@ -55,7 +54,6 @@ struct ImageTypeSelectionView: View {
                 let selectedImageType = selectedImageTypeString()
                 Dogs_CatsListView(imageTypes: selectedImageType)
             }
-        }
     }
 
     var isAnySelected: Bool {

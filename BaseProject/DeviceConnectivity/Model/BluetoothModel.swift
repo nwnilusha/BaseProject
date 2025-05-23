@@ -7,9 +7,10 @@
 
 import CoreBluetooth
 
-struct BluetoothDevice: Identifiable, Equatable {
+struct BluetoothDevice: Identifiable, Equatable, Hashable {
     let id: UUID
     let name: String
+    var deviceState: CBPeripheralState
     let peripheral: CBPeripheral
     
     static func == (lhs: BluetoothDevice, rhs: BluetoothDevice) -> Bool {

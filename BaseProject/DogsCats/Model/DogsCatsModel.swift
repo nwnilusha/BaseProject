@@ -1,5 +1,5 @@
 //
-//  Dogs&CataModel.swift
+//  Dogs&CatsModel.swift
 //  BaseProject
 //
 //  Created by Nilusha Niwanthaka Wimalasena on 4/5/25.

@@ -38,6 +38,6 @@ struct PostsListView: View {
     }
 }
 
-#Preview {
-    PostsListView(viewModel: PostListViewModel(service: Service(apiService: ApiService(urlString: ""))))
-}
+//#Preview {
+//    PostsListView(viewModel: PostListViewModel(service: Service(apiService: ApiService(urlString: ""))))
+//}

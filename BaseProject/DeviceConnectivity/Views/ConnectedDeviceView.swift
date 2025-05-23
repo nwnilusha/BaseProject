@@ -8,16 +8,27 @@
 import SwiftUI
 
 struct ConnectedDeviceView: View {
-    var device: BluetoothDevice
+    @ObservedObject var deviceVM: BluetoothDevicesViewModel
+    @ObservedObject var audioRouteVM: AudioRouteViewModel
     @StateObject private var audioVM = ConnectedDeviceViewModel()
-    @StateObject private var audioRouteVM = AudioRouteViewModel()
-
+    
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         VStack(spacing: 20) {
-            Text("Connected to \(device.name)")
+            Text("Connected to \(deviceVM.activeDevice?.name ?? "Unknown")")
                 .font(.title3)
-
+            
             if audioRouteVM.isBluetoothAudioConnected {
+                Button("Disconnect") {
+                    deviceVM.disconnect()
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                
                 Button(audioVM.isPlaying ? "Pause Song" : "Play Song") {
                     audioVM.togglePlayback()
                 }
@@ -29,7 +40,7 @@ struct ConnectedDeviceView: View {
             } else {
                 Text("No Bluetooth audio device connected.")
                     .foregroundColor(.gray)
-
+                
                 Button("Go to Bluetooth Settings") {
                     audioRouteVM.openBluetoothSettings()
                 }
@@ -38,13 +49,19 @@ struct ConnectedDeviceView: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
             }
-
+            
             Spacer()
         }
         .padding()
         .navigationTitle("Audio Control")
+        .navigationBarBackButtonHidden(deviceVM.activeDevice?.deviceState == .connected && audioRouteVM.isBluetoothAudioConnected)
         .onDisappear {
             audioVM.pauseAudio()
+        }
+        .onChange(of: deviceVM.activeDevice?.deviceState) {
+            if $0 == .disconnected {
+                dismiss()  // Correct way to go back
+            }
         }
     }
 }
