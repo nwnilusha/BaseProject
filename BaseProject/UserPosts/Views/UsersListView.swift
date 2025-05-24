@@ -11,6 +11,9 @@ struct UsersListView: View {
     @StateObject var viewModel: UsersListViewModel
     let serviceFactory: ServiceFactorying
     
+    @State private var showErrorAlert = false
+    @Environment(\.dismiss) private var dismiss
+    
     init(viewModel: UsersListViewModel, serviceFactory: ServiceFactorying) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.serviceFactory = serviceFactory
@@ -28,10 +31,24 @@ struct UsersListView: View {
                 Spacer().frame(height: 16)
             }
         }
+        .onChange(of: viewModel.errorMessage) { oldValue, newValue in
+            if newValue != nil {
+                showErrorAlert = true
+            }
+        }
+        .alert("Error", isPresented: $showErrorAlert) {
+            Button("OK", role: .cancel) {
+                dismiss()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+                .foregroundStyle(Color.red)
+        }
         .navigationTitle("User List")
         .task {
             await viewModel.loadData()
         }
+        .networkAlert()
     }
     
     private func makePostListView(for user: User) -> PostsListView {
@@ -40,6 +57,7 @@ struct UsersListView: View {
         return PostsListView(viewModel: viewModel)
     }
 }
+
 
 struct UserView: View {
     

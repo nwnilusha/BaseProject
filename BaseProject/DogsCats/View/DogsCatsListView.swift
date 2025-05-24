@@ -59,6 +59,7 @@ struct Dogs_CatsListView: View {
                 dismissButton: .default(Text("OK"))
             )
         }
+        .networkAlert()
     }
 }
 

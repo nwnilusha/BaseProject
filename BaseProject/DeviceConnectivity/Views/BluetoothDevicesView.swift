@@ -28,6 +28,7 @@ struct BluetoothDevicesView: View {
         }
         .navigationTitle("Bluetooth Devices")
         .environmentObject(viewModel)
+        .networkAlert()
     }
     
 }

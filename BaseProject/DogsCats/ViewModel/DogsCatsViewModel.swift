@@ -18,6 +18,8 @@ final class Dogs_CatsViewModel: ObservableObject {
     private let serviceFactory: (DogsCatsAPIConfig) -> Servicing
     private var hasMoreData: Bool = true
     
+    private static let dogsCatsCache = NSCache<NSString, NSArray>()
+    
     init(imageTypes: String, serviceFactory: @escaping (DogsCatsAPIConfig) -> Servicing) {
         self.imageTypes = imageTypes
         self.serviceFactory = serviceFactory
@@ -30,7 +32,15 @@ final class Dogs_CatsViewModel: ObservableObject {
 
     @MainActor
     func loadNextPageIfNeeded() async {
-        guard !isLoading && hasMoreData else { return }
+        guard hasMoreData else { return }
+
+        let cacheKey = "dogscats_page_\(pageNumber)_type_\(imageTypes)" as NSString
+        
+        if let cachedAnimals = Self.dogsCatsCache.object(forKey: cacheKey) as? [DogsCats] {
+            dogsCats.append(contentsOf: cachedAnimals)
+            pageNumber += 1
+            return
+        }
         
         isLoading = true
         defer { isLoading = false }
@@ -46,6 +56,7 @@ final class Dogs_CatsViewModel: ObservableObject {
                 hasMoreData = false
             } else {
                 dogsCats.append(contentsOf: filtered)
+                Self.dogsCatsCache.setObject(filtered as NSArray, forKey: cacheKey)
                 pageNumber += 1
             }
         } catch {
@@ -53,6 +64,7 @@ final class Dogs_CatsViewModel: ObservableObject {
         }
     }
 }
+
 
 struct DogsCatsAPIConfig {
     var pageNumber: Int

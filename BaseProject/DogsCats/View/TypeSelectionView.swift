@@ -54,6 +54,7 @@ struct ImageTypeSelectionView: View {
                 let selectedImageType = selectedImageTypeString()
                 Dogs_CatsListView(imageTypes: selectedImageType)
             }
+            .networkAlert()
     }
 
     var isAnySelected: Bool {

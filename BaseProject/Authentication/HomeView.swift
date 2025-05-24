@@ -74,6 +74,7 @@ struct HomeView: View {
                     BluetoothDevicesView()
                 }
             }
+            .networkAlert()
         }
     }
 }

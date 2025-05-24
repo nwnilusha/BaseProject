@@ -6,15 +6,17 @@
 //
 
 import Foundation
+import SwiftUICore
 
 class UsersListViewModel: ObservableObject {
     private let dataService: Servicing
-    private var hasLoaded: Bool = false
-    private var cachedUsers: [User]?
+    private static let usersCache = NSCache<NSString, NSArray>()
     
     @Published var users: [User] = []
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
+    
+    @ObservedObject var networkMonitor = NetworkMonitor.shared
     
     init(service: Servicing) {
         self.dataService = service
@@ -23,7 +25,9 @@ class UsersListViewModel: ObservableObject {
     @MainActor
     func loadData() async {
         
-        if let cachedUsers = cachedUsers, hasLoaded {
+        let cacheKey = "user_list_cache"
+        
+        if let cachedUsers = Self.usersCache.object(forKey: cacheKey as NSString) as? [User] {
             self.users = cachedUsers
             return
         }
@@ -34,11 +38,13 @@ class UsersListViewModel: ObservableObject {
         defer {
             isLoading = false
         }
+        
         do {
-            let fetchedUsers = try await dataService.getUsers()
-            users = fetchedUsers
-            cachedUsers = fetchedUsers
-            hasLoaded = true
+            if networkMonitor.isConnected {
+                let fetchedUsers = try await dataService.getUsers()
+                users = fetchedUsers
+                Self.usersCache.setObject(fetchedUsers as NSArray, forKey: cacheKey as NSString)
+            }
         } catch {
             errorMessage = "Failed to fetch users: \(error.localizedDescription)"
             print(errorMessage ?? "Error observed")

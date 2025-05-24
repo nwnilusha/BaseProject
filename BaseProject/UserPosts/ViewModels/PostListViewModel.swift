@@ -15,7 +15,7 @@ class PostListViewModel: ObservableObject {
     var service: Servicing
     var userId: Int?
     
-    private static var postCache: [Int: [Post]] = [:]
+    private static let postCache = NSCache<NSNumber, NSArray>()
     
     init(service: Servicing, userId: Int? = nil) {
         self.service = service
@@ -24,28 +24,31 @@ class PostListViewModel: ObservableObject {
     
     @MainActor
     func getPosts() async {
+        guard let userId = self.userId else { return }
         
-        guard let userId = self.userId else {
+        let cacheKey = NSNumber(value: userId)
+        
+        if let cached = Self.postCache.object(forKey: cacheKey) as? [Post] {
+            self.posts = cached
             return
         }
         
-        if let cachedPosts = Self.postCache[userId] {
-            self.posts = cachedPosts
-            return
-        }
+        isLoading = true
+        defer { isLoading = false }
         
-        isLoading.toggle()
-        defer {
-            isLoading.toggle()
-        }
         do {
             let fetchedPosts = try await service.getPosts()
             self.posts = fetchedPosts
-            Self.postCache[userId] = fetchedPosts
+            Self.postCache.setObject(fetchedPosts as NSArray, forKey: cacheKey)
         } catch {
             errorDetails = error.localizedDescription
+            print("Failed to fetch posts: \(error.localizedDescription)")
         }
-        
+    }
+    
+    func clearCache() {
+        Self.postCache.removeAllObjects()
     }
 }
+
 

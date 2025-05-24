@@ -24,6 +24,7 @@ struct Dogs_CatsDetailView: View {
                 Text("Image Height : \(dogCatDetails.height)")
             }
         }
+        .networkAlert()
     }
 }
 
