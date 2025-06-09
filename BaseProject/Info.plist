@@ -2,24 +2,30 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>en</string>
-		<string>fr</string>
-	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoadsInLocalNetworking</key>
-		<true/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
-	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIImageName</key>
-		<string>launchIcon</string>
-		<key>UILaunchScreen</key>
-		<dict/>
-	</dict>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>fr</string>
+    </array>
+
+    <key>DogsCatsAPIKey</key>
+    <string>$(DOGS_CATS_API_KEY)</string>
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoadsInLocalNetworking</key>
+        <true/>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+    </dict>
+
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIImageName</key>
+        <string>launchIcon</string>
+        <key>UILaunchScreen</key>
+        <dict/>
+    </dict>
 </dict>
 </plist>
+

@@ -58,7 +58,7 @@ struct ConnectedDeviceView: View {
         .onDisappear {
             audioVM.pauseAudio()
         }
-        .onChange(of: deviceVM.activeDevice?.deviceState) { oldValue, NewValue in
+        .onChange(of: deviceVM.activeDevice?.deviceState) { _, NewValue in
             if NewValue == .disconnected {
                 dismiss() 
             }

@@ -30,7 +30,7 @@ struct PostsListView: View {
                     .font(.caption)
             }
         }
-        .onChange(of: viewModel.errorDetails) { oldValue, newValue in
+        .onChange(of: viewModel.errorDetails) { _, newValue in
             if newValue != nil {
                 showErrorAlert = true
             }

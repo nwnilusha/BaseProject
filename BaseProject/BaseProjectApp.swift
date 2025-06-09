@@ -9,11 +9,10 @@ import SwiftUI
 
 @main
 struct BaseProjectApp: App {
-    private let serviceFactory = ServiceFactory()
 
     var body: some Scene {
         WindowGroup {
-            HomeView(serviceFactory: serviceFactory)
+            LoginView()
         }
     }
 }

@@ -18,7 +18,7 @@ struct NetworkAlertModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: networkMonitor.isConnected) { oldValue, newValue in
+            .onChange(of: networkMonitor.isConnected) { _, newValue in
                 if newValue != lastConnectionStatus {
                     lastConnectionStatus = newValue
                     alertTitle = newValue ? "Internet Connection Restored" : "No Internet Connection"

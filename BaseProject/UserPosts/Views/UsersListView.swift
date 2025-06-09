@@ -9,6 +9,7 @@ import SwiftUI
 
 struct UsersListView: View {
     @StateObject var viewModel: UsersListViewModel
+    @EnvironmentObject var router: NavigationRouter
     let serviceFactory: ServiceFactorying
     
     @State private var showErrorAlert = false
@@ -31,7 +32,7 @@ struct UsersListView: View {
                 Spacer().frame(height: 16)
             }
         }
-        .onChange(of: viewModel.errorMessage) { oldValue, newValue in
+        .onChange(of: viewModel.errorMessage) { _, newValue in
             if newValue != nil {
                 showErrorAlert = true
             }
@@ -52,7 +53,7 @@ struct UsersListView: View {
     }
     
     private func makePostListView(for user: User) -> PostsListView {
-        let service = serviceFactory.makeService(for: "https://jsonplaceholder.typicode.com/users/\(user.id)/posts")
+        let service = serviceFactory.makeService(for: "\(APIConstants.users)/\(user.id)/posts")
         let viewModel = PostListViewModel(service: service, userId: user.id)
         return PostsListView(viewModel: viewModel)
     }

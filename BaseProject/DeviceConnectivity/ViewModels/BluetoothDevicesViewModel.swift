@@ -73,7 +73,7 @@ extension BluetoothDevicesViewModel: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         DispatchQueue.main.async {
-            if let device = self.discoveredDevices.first(where: { $0.peripheral == peripheral }) {
+            if let _ = self.discoveredDevices.first(where: { $0.peripheral == peripheral }) {
                 self.activeDevice?.deviceState = .connected
             }
         }
