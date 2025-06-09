@@ -13,6 +13,9 @@ struct PostsListView: View {
     @StateObject var viewModel: PostListViewModel
     var userId: Int?
     
+    @State private var showErrorAlert = false
+    @Environment(\.dismiss) private var dismiss
+    
     init(viewModel: PostListViewModel, userId: Int? = nil) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.userId = userId
@@ -27,6 +30,19 @@ struct PostsListView: View {
                     .font(.caption)
             }
         }
+        .onChange(of: viewModel.errorDetails) { _, newValue in
+            if newValue != nil {
+                showErrorAlert = true
+            }
+        }
+        .alert("Error", isPresented: $showErrorAlert) {
+            Button("OK", role: .cancel) {
+                dismiss()
+            }
+        } message: {
+            Text(viewModel.errorDetails ?? "")
+                .foregroundStyle(.red)
+        }
         .navigationTitle("Posts")
         .onAppear {
             if viewModel.posts.isEmpty {
@@ -35,9 +51,10 @@ struct PostsListView: View {
                 }
             }
         }
+        .networkAlert()
     }
 }
 
-#Preview {
-    PostsListView(viewModel: PostListViewModel(service: Service(apiService: ApiService(urlString: ""))))
-}
+//#Preview {
+//    PostsListView(viewModel: PostListViewModel(service: Service(apiService: ApiService(urlString: ""))))
+//}

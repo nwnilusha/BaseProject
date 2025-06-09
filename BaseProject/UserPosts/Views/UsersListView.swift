@@ -8,41 +8,57 @@
 import SwiftUI
 
 struct UsersListView: View {
-    
     @StateObject var viewModel: UsersListViewModel
+    @EnvironmentObject var router: NavigationRouter
+    let serviceFactory: ServiceFactorying
     
-    init(viewModel: UsersListViewModel) {
+    @State private var showErrorAlert = false
+    @Environment(\.dismiss) private var dismiss
+    
+    init(viewModel: UsersListViewModel, serviceFactory: ServiceFactorying) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.serviceFactory = serviceFactory
     }
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 16) {
-                    Spacer().frame(height: 16)
-                    ForEach(viewModel.users) { user in
-                        NavigationLink(destination: makePostListView(for: user)) {
-                            UserView(user: user.name, userName: user.username)
-                        }
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                Spacer().frame(height: 16)
+                ForEach(viewModel.users) { user in
+                    NavigationLink(destination: makePostListView(for: user)) {
+                        UserView(user: user.name, userName: user.username)
                     }
-                    
-                    Spacer().frame(height: 16)
                 }
-            }
-            .navigationTitle("User List")
-            .task {
-                await viewModel.loadData()
+                Spacer().frame(height: 16)
             }
         }
+        .onChange(of: viewModel.errorMessage) { _, newValue in
+            if newValue != nil {
+                showErrorAlert = true
+            }
+        }
+        .alert("Error", isPresented: $showErrorAlert) {
+            Button("OK", role: .cancel) {
+                dismiss()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+                .foregroundStyle(Color.red)
+        }
+        .navigationTitle("User List")
+        .task {
+            await viewModel.loadData()
+        }
+        .networkAlert()
     }
     
     private func makePostListView(for user: User) -> PostsListView {
-        let apiService = ApiService(urlString: "https://jsonplaceholder.typicode.com/users/\(user.id)/posts")
-        let service = Service(apiService: apiService)
+        let service = serviceFactory.makeService(for: "\(APIConstants.users)/\(user.id)/posts")
         let viewModel = PostListViewModel(service: service, userId: user.id)
         return PostsListView(viewModel: viewModel)
     }
 }
+
 
 struct UserView: View {
     
@@ -72,8 +88,8 @@ struct UserView: View {
     }
 }
 
-struct UsersListView_Previews: PreviewProvider {
-    static var previews: some View {
-        UsersListView(viewModel: UsersListViewModel(service: Service(apiService: ApiService(urlString: ""))))
-    }
-}
+//struct UsersListView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UsersListView(viewModel: UsersListViewModel(service: Service(apiService: ApiService(urlString: ""))))
+//    }
+//}

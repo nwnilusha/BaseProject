@@ -1,0 +1,8 @@
+//
+//  Release.xcconfig
+//  BaseProject
+//
+//  Created by Nilusha Niwanthaka Wimalasena on 6/6/25.
+//
+
+DOGS_CATS_API_KEY = "b84255e5-0788-4258-aa10-f659ceb6b3c5"

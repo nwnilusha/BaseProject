@@ -8,51 +8,59 @@
 import SwiftUI
 
 struct BluetoothDevicesView: View {
+    @StateObject private var viewModel = BluetoothDevicesViewModel()
+    @StateObject private var audioRouteViewModel = AudioRouteViewModel()
     
-    @StateObject var viewModel: BluetoothDevicesViewModel = BluetoothDevicesViewModel()
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.discoveredPeripherals, id: \.self) { index in
-                        NavigationLink(destination: ConnectedDeviceView()) {
-                            BluetoothDeviceView(deviceName: "", connectedSttus: "")
-                        }
-                    }
+        ScrollView {
+            LazyVStack (spacing: 16) {
+                ForEach(viewModel.discoveredDevices, id: \.self) { device in
+                    BluetoothDeviceView(device: device)
                 }
-                Text("Bluetooth Devices")
+            }
+            .padding(.top, 16)
+        }
+        
+        .navigationDestination(isPresented: .constant(viewModel.activeDevice?.deviceState == .connected)) {
+            if let _ = viewModel.activeDevice {
+                ConnectedDeviceView(deviceVM: viewModel, audioRouteVM: audioRouteViewModel)
             }
         }
+        .navigationTitle("Bluetooth Devices")
+        .environmentObject(viewModel)
+        .networkAlert()
     }
+    
 }
 
 struct BluetoothDeviceView: View {
     
-    let deviceName: String
-    let connectedSttus: String
+    @EnvironmentObject var viewModel: BluetoothDevicesViewModel
+    let device: BluetoothDevice
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(deviceName)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                Text(connectedSttus)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
+            Text(device.name)
+                .font(.body)
+                .foregroundColor(.primary)
+            
             Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
+            
+            Button(action: {
+                viewModel.connect(to: device)
+            }) {
+                Text(viewModel.activeDevice?.deviceState == .connecting && device.id == viewModel.activeDevice?.id ? "Connecting..." : "Connect")
+            }
+            .disabled(viewModel.activeDevice?.deviceState == .connecting)
         }
         .padding()
-        .frame(maxWidth: .infinity)
         .background(Color.white)
-        .cornerRadius(8)
-        .shadow(radius: 4)
+        .cornerRadius(12)
+        .shadow(radius: 2)
         .padding(.horizontal)
     }
 }
+
 
 //#Preview {
 //    BluetoothDevicesView()
